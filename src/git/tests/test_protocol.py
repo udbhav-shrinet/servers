@@ -752,7 +752,7 @@ async def test_git_show_commit_with_parent(repo: git.Repo):
     )
     assert show_text(result) == (
         show_header(commit)
-        + "\n--- test.txt\n+++ test.txt\n"
+        + "\n--- a/test.txt\n+++ b/test.txt\n"
         + "@@ -1,5 +1,5 @@\n line 1\n line 2\n-line 3\n+SHOWN\n line 4\n line 5\n"
     )
     text = show_text(result)
@@ -772,7 +772,7 @@ async def test_git_show_multiline_message_is_indented(repo: git.Repo):
     result = await call(None, "git_show", {"repo_path": str(root), "revision": "HEAD"})
     text = show_text(result)
     assert text.startswith(show_header(commit))
-    assert "\n\n    subject\n    \n    body line\n\n--- test.txt\n" in text
+    assert "\n\n    subject\n    \n    body line\n\n--- a/test.txt\n" in text
 
 
 async def test_git_show_initial_commit_diffs_against_empty_tree(repo: git.Repo):
@@ -784,7 +784,7 @@ async def test_git_show_initial_commit_diffs_against_empty_tree(repo: git.Repo):
     )
     assert show_text(result) == (
         show_header(initial)
-        + "\n--- /dev/null\n+++ test.txt\n"
+        + "\n--- /dev/null\n+++ b/test.txt\n"
         + "@@ -0,0 +1,5 @@\n+line 1\n+line 2\n+line 3\n+line 4\n+line 5\n"
     )
 
@@ -797,7 +797,7 @@ async def test_git_show_deleted_file_diffs_to_dev_null(repo: git.Repo):
     )
     assert show_text(result) == (
         show_header(commit)
-        + "\n--- test.txt\n+++ /dev/null\n"
+        + "\n--- a/test.txt\n+++ /dev/null\n"
         + "@@ -1,5 +0,0 @@\n-line 1\n-line 2\n-line 3\n-line 4\n-line 5\n"
     )
 
@@ -810,7 +810,7 @@ async def test_git_show_rename_only_commit_has_header_and_no_patch(repo: git.Rep
         None, "git_show", {"repo_path": str(root_of(repo)), "revision": "HEAD"}
     )
     assert show_text(result) == (
-        show_header(commit) + "\n--- test.txt\n+++ renamed.txt\n"
+        show_header(commit) + "\n--- a/test.txt\n+++ b/renamed.txt\n"
     )
 
 
@@ -822,7 +822,7 @@ async def test_git_show_binary_commit(repo: git.Repo):
     result = await call(None, "git_show", {"repo_path": str(root), "revision": "HEAD"})
     assert show_text(result) == (
         show_header(commit)
-        + "\n--- /dev/null\n+++ blob.bin\n"
+        + "\n--- /dev/null\n+++ b/blob.bin\n"
         + "Binary files /dev/null and b/blob.bin differ\n"
     )
 
@@ -837,7 +837,7 @@ async def test_git_show_non_utf8_patch_is_decoded_with_replacement(repo: git.Rep
     result = await call(None, "git_show", {"repo_path": str(root), "revision": "HEAD"})
     assert show_text(result) == (
         show_header(commit)
-        + "\n--- /dev/null\n+++ latin.txt\n"
+        + "\n--- /dev/null\n+++ b/latin.txt\n"
         + "@@ -0,0 +1 @@\n+caf\ufffd\n"
     )
 
